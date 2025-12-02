@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",     /* Backend Node.js dùng commonjs */
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "esModuleInterop": true,  /* <--- DÒNG QUAN TRỌNG NHẤT: Giúp import express không bị lỗi */
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true      /* Bỏ qua check lỗi sâu trong node_modules */
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

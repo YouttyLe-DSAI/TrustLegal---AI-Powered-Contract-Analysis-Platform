@@ -1,0 +1,14 @@
+# Không commit file env
+*.env
+**/.env
+
+# Không commit file upload của user
+backend/uploads/
+
+# Không commit file bytecode python
+**/__pycache__/
+
+# (tùy bạn thêm) node_modules nếu có
+node_modules/
+backend/node_modules/
+frontend/node_modules/

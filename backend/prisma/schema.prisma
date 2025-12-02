@@ -1,0 +1,154 @@
+// backend/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --- 1. ENUM & CONFIG ---
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum PlanType {
+  FREE_TRIAL
+  PRO_MONTHLY
+  ENTERPRISE
+}
+enum ProcessingStatus {
+  PENDING     // Chờ xử lý
+  PROCESSING  // Đang gửi sang AI
+  COMPLETED   // Xong
+  FAILED      // Lỗi
+}
+enum Sender {
+  USER
+  AI
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+// --- 2. MODULE USER & SUBSCRIPTION ---
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String?  // <--- SỬA: Thêm dấu ? (Cho phép null nếu dùng Google)
+  fullName     String?
+  phone        String?
+  dob          String?
+  
+  role         UserRole @default(USER)
+  
+  // Đánh dấu user này đến từ đâu
+  provider     String   @default("credentials") // "credentials" hoặc "google"
+  
+  subscription Subscription? 
+  contracts    Contract[]
+  chatSessions ChatSession[]
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// --- BẢNG MỚI: LƯU OTP QUÊN MẬT KHẨU ---
+model PasswordReset {
+  id        String   @id @default(uuid())
+  email     String
+  token     String   // Mã OTP (ví dụ: 123456)
+  expiresAt DateTime // Thời gian hết hạn (ví dụ: sau 5 phút)
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
+model Subscription {
+  id             String    @id @default(uuid())
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  planType       PlanType  @default(FREE_TRIAL)
+  maxUploads     Int       @default(5)
+  currentUploads Int       @default(0)
+  
+  startDate      DateTime  @default(now())
+  endDate        DateTime?
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// --- 3. MODULE CONTRACT (CORE) ---
+model Contract {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  fileName    String
+  fileSize    Int?      // Lưu byte
+  mimeType    String?   // application/pdf...
+  s3Key       String    // Đường dẫn file (local hoặc S3)
+  
+  status      ProcessingStatus @default(PENDING)
+  errorMessage String?
+
+  // Kết quả phân tích (Quan hệ 1-1)
+  analysis    AnalysisReport?
+  
+  // Các phiên chat liên quan
+  sessions    ChatSession[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// --- 4. MODULE AI ANALYSIS ---
+model AnalysisReport {
+  id             String    @id @default(uuid())
+  contractId     String    @unique
+  contract       Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  summary        String    @db.Text
+  overallRisk    RiskLevel @default(LOW)
+  
+  // Lưu toàn bộ JSON chi tiết từ AI Lambda vào đây
+  fullJsonResult Json      
+  
+  modelUsed      String?   // Ví dụ: "claude-3-haiku"
+  createdAt      DateTime  @default(now())
+}
+
+// --- 5. MODULE CHAT ---
+model ChatSession {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contractId  String
+  contract    Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  
+  title       String?   
+  messages    Message[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Message {
+  id          String      @id @default(uuid())
+  sessionId   String
+  session     ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  role        Sender
+  content     String      @db.Text
+  
+  createdAt   DateTime    @default(now())
+}

@@ -1,0 +1,18 @@
+{
+  "name": "trustlegal-fullstack",
+  "version": "1.0.0",
+  "description": "One-click start for fullstack project",
+  "scripts": {
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install && cd ..",
+    "frontend": "cd frontend && npm run dev",
+    "backend": "cd backend && npm run dev",
+    
+    "// --- SỬA LẠI DÒNG NÀY CHO ĐÚNG TÊN THƯ MỤC VÀ LỆNH CONDA ---": "",
+    "ai": "cd AI-Service && python main.py",
+
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\" \"npm run ai\" --names \"BE,FE,AI\" --prefix-colors \"green,blue,yellow\" --kill-others"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
