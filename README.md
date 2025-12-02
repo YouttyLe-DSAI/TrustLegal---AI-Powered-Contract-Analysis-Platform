@@ -474,17 +474,7 @@ cd backend && npx prisma migrate reset
 
 ---
 
-## 🤝 Đóng Góp
-
-Chúng tôi hoan nghênh các pull request! Vui lòng:
-
-1. Fork repository
-2. Tạo branch feature (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Mở Pull Request
-
----
+--
 
 ## 📊 Performance Metrics
 
@@ -504,25 +494,18 @@ Dự án này được cấp phép dưới **MIT License** - xem file [LICENSE](
 ## 👥 Tác Giả
 
 **TrustLegal Team**
-
-- 🔨 Development: Full-stack Engineer
-- 🤖 AI/ML: Data Scientist
-- 🎨 UI/UX: Product Designer
-
----
-
-## 📞 Liên Hệ & Support
-
-- **Email**: support@trustlegal.com
-- **Issues**: [GitHub Issues](https://github.com/yourusername/trustlegal/issues)
-- **Discord**: [Community Server]
-- **Documentation**: [Wiki](https://github.com/yourusername/trustlegal/wiki)
+- LEADER: TRẦN THỊ MINH ANH
+- Preprocessing - Data : LÊ MINH TUẤN
+- 🎨 UI/UX: TRẦN THỊ MINH ANH
+- FRONTEND: LÊ MINH TUẤN
+- BACKEND: NGUYỄN MINH NHẬT
+- 🤖 AI/ML: NGUYỄN TRÍ DŨNG , LÊ MINH TUẤN, NGUYỄN MINH NHẬT
 
 ---
 
 ## 🎓 Về Dự Án
 
-Dự án này được phát triển như phần của khóa học tại **FPTU** để giải quyết vấn đề:
+Dự án này được phát triển trong quá trình OJT tại AWS như phần của khóa học tại **FPTU** để giải quyết vấn đề:
 - 📋 Phân tích hợp đồng tốn thời gian
 - ⚠️ Khó phát hiện rủi ro
 - 📚 Tra cứu pháp lý phức tạp
